@@ -7,24 +7,18 @@ ENTITY adcReceiveBuffer IS
   GENERIC(
     data_length : INTEGER := 16);     --data length in bits
   PORT(
-    clk, reset_n, enable, ld_a, ld_b, ld_c, ld_d     : IN     STD_LOGIC;
-    address : IN     STD_LOGIC_VECTOR(2 downto 0);
-    Din     : IN     STD_LOGIC;                                 --master in slave out
-    Dout    : OUT    STD_LOGIC;                                 --master out slave in
-    sclk    : OUT    STD_LOGIC;                                 --spi clock
-    ss_n    : OUT    STD_LOGIC;                                 --slave select
-    busy    : OUT    STD_LOGIC;                                 --master busy signal
-    a	      : OUT    STD_LOGIC_VECTOR(data_length-1 DOWNTO 0); --data received
-    b	      : OUT    STD_LOGIC_VECTOR(data_length-1 DOWNTO 0);
-    c	      : OUT    STD_LOGIC_VECTOR(data_length-1 DOWNTO 0);
-    d	      : OUT    STD_LOGIC_VECTOR(data_length-1 DOWNTO 0);
+    clk, reset_n, enable, ld_a, ld_b, ld_c, ld_d : IN     STD_LOGIC;
+    address                                      : IN     STD_LOGIC_VECTOR(2 downto 0);
+    Din                                          : IN     STD_LOGIC;
+    Dout                                         : OUT    STD_LOGIC;
+    sclk                                         : OUT    STD_LOGIC;
+    busy                                         : OUT    STD_LOGIC;
+    a, b, c, d                                   : OUT    STD_LOGIC_VECTOR(data_length-1 DOWNTO 0));
 END adcReceiveBuffer;
 
 ARCHITECTURE rtl OF adcReceiveBuffer IS
-  TYPE FSM IS(init, execute);                           	  	   --state machine
-  SIGNAL pState, nState    : FSM;
 --  SIGNAL last_bit	: INTEGER RANGE 0 TO data_length*2;        --last bit indicator
-  SIGNAL tx	     	: STD_LOGIC_VECTOR(data_length-1 DOWNTO 0);  --data to transmit
+  SIGNAL tx, rx	     	: STD_LOGIC_VECTOR(data_length-1 DOWNTO 0);  --data to transmit
 
 
 BEGIN
@@ -36,11 +30,11 @@ port map -- Instantiation of SPI_Master inside testbench.
       clk     => clk,
       reset_n => reset_n,
       enable  => enable,
-      cpol    => "0",
-      cpha    => "1",
+      cpol    => '0',
+      cpha    => '1',
       miso    => Din,
       sclk    => sclk,
-      ss_n    => ss_n,
+      ss_n    => open,
       mosi    => Dout,
       busy    => busy,
       tx		  => tx,
@@ -48,7 +42,7 @@ port map -- Instantiation of SPI_Master inside testbench.
 );
 
 LUT_1 : entity work.LUT(rtl)
-generic map (data_lenght => data_lenght)
+generic map (DataWidth => data_length)
 port map
   (
     sel  => address,
@@ -56,7 +50,7 @@ port map
   );
 
 Reg_a : entity work.Reg(rtl)
-generic map (DataWidth => data_lenght)
+generic map (DataWidth => data_length)
 port map
   (
     clk => clk,
@@ -67,7 +61,7 @@ port map
   );
 
 Reg_b : entity work.Reg(rtl)
-generic map (DataWidth => data_lenght)
+generic map (DataWidth => data_length)
 port map
   (
     clk => clk,
@@ -78,7 +72,7 @@ port map
   );
 
 Reg_c : entity work.Reg(rtl)
-generic map (DataWidth => data_lenght)
+generic map (DataWidth => data_length)
 port map
   (
     clk => clk,
@@ -89,7 +83,7 @@ port map
   );
 
 Reg_d : entity work.Reg(rtl)
-generic map (DataWidth => data_lenght)
+generic map (DataWidth => data_length)
 port map
   (
     clk => clk,
@@ -99,4 +93,4 @@ port map
     Q   => d
   );
   
-END behavioural;
+END rtl;

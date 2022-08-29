@@ -23,7 +23,7 @@ END spi_master;
 
 ARCHITECTURE behavioural OF spi_master IS
   TYPE FSM IS(init, execute);                           		--state machine
-  SIGNAL state       : FSM;                             
+  SIGNAL state       : FSM;
   SIGNAL receive_transmit : STD_LOGIC;                      --'1' for tx, '0' for rx 
   SIGNAL clk_toggles : INTEGER RANGE 0 TO data_length*2 + 1;    --clock toggle counter
   SIGNAL last_bit		: INTEGER RANGE 0 TO data_length*2;        --last bit indicator
