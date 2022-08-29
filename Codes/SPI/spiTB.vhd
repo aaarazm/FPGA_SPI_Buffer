@@ -13,7 +13,7 @@ architecture sim of spiTB is
 	signal clkk :  std_logic := '0';
 	signal rstt :  std_logic := '1';
 	signal enablee :  std_logic := '1';
-	signal cpoll :  std_logic := '1';
+	signal cpoll :  std_logic := '0';
 	signal cphaa :  std_logic := '1';
 	signal mosii :  std_logic;
 	signal misoo :  std_logic;
