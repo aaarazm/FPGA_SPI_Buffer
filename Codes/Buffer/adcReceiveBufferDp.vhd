@@ -3,7 +3,7 @@ USE ieee.std_logic_1164.all;
 USE ieee.std_logic_arith.all;
 USE ieee.std_logic_unsigned.all;
 
-ENTITY adcReceiveBuffer IS
+ENTITY adcReceiveBufferDp IS
   GENERIC(
     data_length : INTEGER := 16);     --data length in bits
   PORT(
@@ -14,9 +14,9 @@ ENTITY adcReceiveBuffer IS
     sclk                                         : OUT    STD_LOGIC;
     busy                                         : OUT    STD_LOGIC;
     a, b, c, d                                   : OUT    STD_LOGIC_VECTOR(data_length-1 DOWNTO 0));
-END adcReceiveBuffer;
+END adcReceiveBufferDp;
 
-ARCHITECTURE rtl OF adcReceiveBuffer IS
+ARCHITECTURE rtl OF adcReceiveBufferDp IS
 --  SIGNAL last_bit	: INTEGER RANGE 0 TO data_length*2;        --last bit indicator
   SIGNAL tx, rx	     	: STD_LOGIC_VECTOR(data_length-1 DOWNTO 0);  --data to transmit
 

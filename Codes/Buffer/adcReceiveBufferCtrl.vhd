@@ -30,11 +30,11 @@ BEGIN
     address <= "000";
     CSBar <= '1';
 
-    CASE state IS               
+    CASE pState IS
 
-      WHEN init =>					 -- bus is idle
+      WHEN idle =>					 -- bus is idle
 
-        clk_toggles <= '0';
+        clk_toggles <= 0;
   
         IF(DRDYBar = '0') THEN       		--initiate communication
           CSBar <= '0';
@@ -42,7 +42,9 @@ BEGIN
 
           nState <= execute;        
         ELSE
-          nState <= init;          
+          CSBar <= '1';
+          enable <= '0';
+          nState <= idle;          
         END IF;
 
 
@@ -55,20 +57,36 @@ BEGIN
           CASE clk_toggles IS
             WHEN 1 =>
               ld_a <= '1';
+              --address <= <something>
             WHEN 2 =>
               ld_b <= '1';
             WHEN 3 =>
               ld_c <= '1';
             WHEN 4 =>
               ld_d <= '1';
+            WHEN others =>
+              --do nothing
           END CASE;
           IF clk_toggles < 5 THEN
-			      clk_toggles <= clk_toggles + 1;
+			      clk_toggles <= clk_toggles + 1; -- counting up
+            nState <= execute;
+          ELSE -- if clk_toggle reached the limit
+            nState <= idle;
           END IF;
         END IF;
-        IF clk_toggles = 5
 
     END CASE;
+  END PROCESS;
+
+  PROCESS(clk, reset) IS
+  BEGIN
+    IF rising_edge(clk) or falling_edge(reset) THEN
+      IF reset = '0' THEN
+        pState <= idle;
+      ELSE
+        pState <= nState;
+      END IF;
+    END IF;
   END PROCESS;
 
 END behavioural;

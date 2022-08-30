@@ -91,8 +91,31 @@ begin
         enablee <= '1';
         wait for 10 ns;
         enablee <= '0';
+        wait for 50 ns;
+        enablee <= '1';
         wait;
 
 	end process;
 	
 end architecture;
+
+--add wave -position insertpoint  \
+--sim:/spitb/clkk \
+--sim:/spitb/rstt \
+--sim:/spitb/enablee \
+--sim:/spitb/cpoll \
+--sim:/spitb/cphaa \
+--sim:/spitb/mosii \
+--sim:/spitb/misoo \
+--sim:/spitb/ss_n1 \
+--sim:/spitb/sclkk \
+--sim:/spitb/mBusy \
+--sim:/spitb/s1Busy \
+--sim:/spitb/slave1RxEn \
+--sim:/spitb/masterTx \
+--sim:/spitb/slave1Tx \
+--sim:/spitb/masterRx \
+--sim:/spitb/slave1Rx \
+--sim:/spitb/width \
+--sim:/spitb/period \
+--sim:/spitb/SPI_M/state
