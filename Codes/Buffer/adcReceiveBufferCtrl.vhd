@@ -55,7 +55,6 @@ BEGIN
         END IF;
         
 		    -- counter
-		    IF mBusy = '0' THEN
           CASE clk_toggles IS
             WHEN 1 =>
               ld_a <= '1';
@@ -72,6 +71,7 @@ BEGIN
             WHEN others =>
               --do nothing
           END CASE;
+		    IF falling_edge(mBusy) THEN
           IF clk_toggles < 5 THEN
 			      clk_toggles <= clk_toggles + 1; -- counting up
             nState <= execute;
