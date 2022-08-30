@@ -7,13 +7,13 @@ ENTITY adcReceiveBuffer IS
 --  GENERIC(
 --    data_length : INTEGER := 16);     --data length in bits
   PORT(
-    clk, reset, DRDYBar, Din           : IN     STD_LOGIC;
-    CSBar, Dout, mosi, sclk : OUT    STD_LOGIC;
-    A, B, C, D : OUT STD_LOGIC_VECTOR(15 DOWNTO 0));
+    clk, reset, DRDYBar, Din : IN     STD_LOGIC;
+    CSBar, Dout, sclk        : OUT    STD_LOGIC;
+    A, B, C, D               : OUT STD_LOGIC_VECTOR(15 DOWNTO 0));
 END adcReceiveBuffer;
 
 ARCHITECTURE behavioural OF adcReceiveBuffer IS
-    SIGNAL mBusy, enable, ld_a, ld_b, ld_c, ld_d : STD_LOGIC;
+    SIGNAL mBusy, enable, ld_a, ld_b, ld_c, ld_d, ss_n : STD_LOGIC;
     SIGNAL address : STD_LOGIC_VECTOR(2 DOWNTO 0);
 
 
@@ -28,6 +28,7 @@ port map
     DRDYBar => DRDYBar,
     CSBar   => CSBar,
     enable  => enable,
+    ss_n    => ss_n,
     ld_a    => ld_a,
     ld_b    => ld_b,
     ld_c    => ld_c,
@@ -42,6 +43,7 @@ port map
     clk     => clk,
     reset_n => reset,
     enable  => enable,
+    ss_n    => ss_n,
     ld_a    => ld_a,
     ld_b    => ld_b,
     ld_c    => ld_c,

@@ -7,7 +7,7 @@ ENTITY adcReceiveBufferCtrl IS
 --  GENERIC(
 --    data_length : INTEGER := 16);     --data length in bits
   PORT(
-    clk, reset, mBusy, DRDYBar            : IN     STD_LOGIC;
+    clk, reset, mBusy, DRDYBar, ss_n      : IN     STD_LOGIC;
     CSBar, enable, ld_a, ld_b, ld_c, ld_d : OUT    STD_LOGIC;
     address                               : OUT    STD_LOGIC_VECTOR(2 DOWNTO 0));
 END adcReceiveBufferCtrl;
@@ -15,12 +15,14 @@ END adcReceiveBufferCtrl;
 ARCHITECTURE behavioural OF adcReceiveBufferCtrl IS
   TYPE FSM IS(idle, execute);                    --state machine
   SIGNAL pState, nState : FSM;
+  SIGNAL CS_toggle      : STD_LOGIC := '1';
   SIGNAL clk_toggles    : INTEGER RANGE 0 TO 5;  --clock toggle counter
 
 
 BEGIN
   
-  PROCESS(pState, mBusy, DRDYBar) IS
+  CSBar <= CS_toggle;
+  PROCESS(pState, mBusy, DRDYBar, ss_n) IS
   BEGIN
     ld_a <= '0';
     ld_b <= '0';
@@ -28,42 +30,45 @@ BEGIN
     ld_d <= '0';
     enable <= '0';
     address <= "000";
-    CSBar <= '1';
 
     CASE pState IS
 
       WHEN idle =>					 -- bus is idle
-
+        CS_toggle <= '1';
         clk_toggles <= 0;
   
         IF(DRDYBar = '0') THEN       		--initiate communication
-          CSBar <= '0';
+          --CSBar <= '0';
           enable <= '1';
 
-          nState <= execute;        
+          nState <= execute;
         ELSE
-          CSBar <= '1';
           enable <= '0';
           nState <= idle;          
         END IF;
 
 
       WHEN execute =>
-        CSBar <= '0';
         enable <= '1';
+        IF falling_edge(ss_n) and clk_toggles = 0 THEN
+          CS_toggle <= '0';
+        END IF;
         
 		    -- counter
-		    IF(falling_edge(mBusy)) THEN
+		    IF mBusy = '0' THEN
           CASE clk_toggles IS
             WHEN 1 =>
               ld_a <= '1';
-              --address <= <something>
+              address <= "001";
             WHEN 2 =>
               ld_b <= '1';
+              address <= "010";
             WHEN 3 =>
               ld_c <= '1';
+              address <= "011";
             WHEN 4 =>
               ld_d <= '1';
+              address <= "100";
             WHEN others =>
               --do nothing
           END CASE;
@@ -80,7 +85,7 @@ BEGIN
 
   PROCESS(clk, reset) IS
   BEGIN
-    IF rising_edge(clk) or falling_edge(reset) THEN
+    IF falling_edge(clk) or falling_edge(reset) THEN
       IF reset = '0' THEN
         pState <= idle;
       ELSE

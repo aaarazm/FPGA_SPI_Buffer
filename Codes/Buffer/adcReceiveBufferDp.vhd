@@ -13,6 +13,7 @@ ENTITY adcReceiveBufferDp IS
     Dout                                         : OUT    STD_LOGIC;
     sclk                                         : OUT    STD_LOGIC;
     busy                                         : OUT    STD_LOGIC;
+    ss_n                                         : OUT    STD_LOGIC;
     a, b, c, d                                   : OUT    STD_LOGIC_VECTOR(data_length-1 DOWNTO 0));
 END adcReceiveBufferDp;
 
@@ -34,7 +35,7 @@ port map -- Instantiation of SPI_Master inside testbench.
       cpha    => '1',
       miso    => Din,
       sclk    => sclk,
-      ss_n    => open,
+      ss_n    => ss_n,
       mosi    => Dout,
       busy    => busy,
       tx		  => tx,
