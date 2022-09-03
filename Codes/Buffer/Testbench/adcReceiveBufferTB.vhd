@@ -87,6 +87,8 @@ begin
         Tx <= "0000000000000011";
         wait for 140 ns;
         Tx <= "0000000000000111";
+        wait for 370 ns;
+        DRDYBar <= '1';
         wait;
 
 	end process;

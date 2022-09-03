@@ -8,7 +8,7 @@ ENTITY adcReceiveBufferDp IS
     data_length : INTEGER := 16);     --data length in bits
   PORT(
     clk, reset_n, enable, ld_a, ld_b, ld_c, ld_d : IN     STD_LOGIC;
-    address                                      : IN     STD_LOGIC_VECTOR(2 downto 0);
+    address                                      : IN     STD_LOGIC_VECTOR(2 DOWNTO 0);
     Din                                          : IN     STD_LOGIC;
     Dout                                         : OUT    STD_LOGIC;
     sclk                                         : OUT    STD_LOGIC;
